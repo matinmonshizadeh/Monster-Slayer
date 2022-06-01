@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monster Slayer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="favicon.ico">
+  <script src="https://unpkg.com/vue@next" defer></script>
+  <script src="app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <h1>Monster Slayer</h1>
+  </header>
+  <div id="game">
+    <section id="monster" class="container">
+      <h2>Monster Health</h2>
+      <div class="healthbar">
+        <div class="healthbar__value" :style="monsterBarStyles"></div>
+      </div>
+    </section>
+    <section id="player" class="container">
+      <h2>Your Health</h2>
+      <div class="healthbar">
+        <div class="healthbar__value" :style="playerBarStyles"></div>
+      </div>
+    </section>
+    <section class="container" v-if="winner">
+      <h2>Game Over!</h2>
+      <h3 class="log--damage" v-if="winner === 'monster'">You lost!</h3>
+      <h3 class="log--heal" v-else-if="winner === 'player'">You won!</h3>
+      <h3 v-else="">It's a draw</h3>
+      <button @click="startGame">Start New Game</button>
+    </section>
+    <section id="controls" v-else>
+      <button @click="attackMonster">ATTACK</button>
+      <button :disabled="mayUseSpecialAttack" @click="specialAttackMonster">SPECIAL ATTACK</button>
+      <button :disabled="mayUseHeal" @click="healPlayer">HEAL({{3 - healCounter}})</button>
+      <button @click="surrender">SURRENDER</button>
+    </section>
+    <section id="log" class="container battleLog">
+      <h2 class="battleText">Battle Log</h2>
+      <ul>
+        <section class="container battleLogSection" v-for="logMessage in logMessages"><span
+            :style="roundCounter">{{logMessage.actionRound}}</span>
+          <span
+            :class="{'log--player': logMessage.actionBy === 'player', 'log--monster':logMessage.actionBy === 'monster'}">
+            {{logMessage.actionBy
+            === 'player' ? 'player' :
+            'monster'}}</span>
+          <span v-if="logMessage.actionType === 'heal'"> heals himself for <span
+              class="log--heal">{{logMessage.actionValue}}</span></span>
+          <span v-else> attacks and deals <span class="log--damage">{{logMessage.actionValue}}</span></span>
+        </section>
+
+      </ul>
+    </section>
+  </div>
+  <section class="container" id="rules">
+    <h2>Rules</h2>
+    <section class="container rulesSection">Each round you can <b>ATTACK</b></section>
+    <section class="container rulesSection">Each 3 round you have 1 <b>SPECIAL ATTACK</b></section>
+    <section class="container rulesSection">At all you have 3 <b>HEAL</b></section>
+    <section class="container rulesSection">if you <b>ATTACK</b>, <b>SPECIAL ATTACK</b> or <b>HEAL</b> you deal damage
+      with monster
+    </section>
+  </section>
+  <footer>Matin Monshizadeh</footer>
+</body>
+
+</html>
